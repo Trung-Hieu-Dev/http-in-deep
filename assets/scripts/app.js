@@ -1,16 +1,29 @@
 const listElement = document.querySelector('.posts');
 const postTemplate = document.getElementById('single-post');
 
-const xhr = new XMLHttpRequest();
+function sendHttpRequest (method, url) {  
+    const promise = new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+    
+        xhr.open(method, url);
+        
+        //define type data to get
+        xhr.responseType = 'json';
+        
+        //parse json data
+        xhr.onload = function () {  
+            resolve(xhr.response);
+        }
+        
+        xhr.send();
+    });
+    return promise;
+}
 
-xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts');
-
-//define type data to get
-xhr.responseType = 'json';
-
-//parse json data
-xhr.onload = function () {  
-    const listOfPosts = xhr.response;
+async function fetchPosts() {
+    const responseData = await sendHttpRequest('GET', 'https://jsonplaceholder.typicode.com/posts');
+    
+    const listOfPosts = responseData;
 
     //render list of posts by using template
     for (const post of listOfPosts) {
@@ -19,7 +32,10 @@ xhr.onload = function () {
         postEl.querySelector('p').textContent = post.body;
         listElement.append(postEl);
     }
+        
 }
 
-xhr.send();
+fetchPosts();
+
+
 
