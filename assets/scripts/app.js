@@ -13,13 +13,22 @@ function sendHttpRequest (method, url, data) {
             'Content-Type': 'application/json'
         }
     }).then(response => {
-        return response.json();
+        if(response.status >= 200 && response.status < 300) {
+            return response.json();
+        } else {
+            return response.json().then(errorData => {
+                throw Error('Something went wrong - Server side!');
+            })
+        }
+    }).catch(error => {
+        console.log(error);
+        throw new Error('Somthing went wrong !');
     });
 }
 
 async function fetchPosts() {
-   
-        const responseData = await sendHttpRequest('GET', 'https://jsonplaceholder.typicode.com/posts');
+    try {
+        const responseData = await sendHttpRequest('GET', 'https://jsonplaceholder.typicode.com/pos');
     
         const listOfPosts = responseData;
 
@@ -31,7 +40,9 @@ async function fetchPosts() {
             postEl.querySelector('li').id = post.id;
             listElement.append(postEl);
         }
-    
+    } catch (error) {
+        alert(error);
+    }  
         
 }
 
