@@ -5,37 +5,15 @@ const fetchButton = document.querySelector("#available-posts button");
 
 
 function sendHttpRequest (method, url, data) {  
-    const promise = new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-    
-        xhr.open(method, url);
-        
-        //define type data to get
-        xhr.responseType = 'json';
-        
-        //parse json data
-        xhr.onload = function () { 
-            //handling error for the server
-            if(xhr.status >= 200 && xhr.status <= 300) {
-                resolve(xhr.response);
-            } else {
-                reject(new Error('Something went wrong !'));
-            }
-        }
-
-        // handling error for bad internet connection
-        xhr.onerror = function () {  
-            reject(new Error('Something fail !'));
-        }
-        
-        xhr.send(JSON.stringify(data));
+        //using fetch API
+    return fetch(url).then(response => {
+        return response.json();
     });
-    return promise;
 }
 
 async function fetchPosts() {
-    try { // handling error
-        const responseData = await sendHttpRequest('GET', 'https://jsonplaceholder.typicode.com/pos');
+   
+        const responseData = await sendHttpRequest('GET', 'https://jsonplaceholder.typicode.com/posts');
     
         const listOfPosts = responseData;
 
@@ -47,9 +25,7 @@ async function fetchPosts() {
             postEl.querySelector('li').id = post.id;
             listElement.append(postEl);
         }
-    } catch (error) {
-        alert((error)); //error out put
-    }
+    
         
 }
 
