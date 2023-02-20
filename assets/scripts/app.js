@@ -33,6 +33,7 @@ async function fetchPosts() {
         const postEl = document.importNode(postTemplate.content, true);
         postEl.querySelector('h2').textContent = post.title.toUpperCase();
         postEl.querySelector('p').textContent = post.body;
+        postEl.querySelector('li').id = post.id;
         listElement.append(postEl);
     }
         
@@ -57,6 +58,12 @@ form.addEventListener('submit', event => {
     createPost(enteredTitle, enteredContent);
 })
 
+listElement.addEventListener('click', event => {
+    if(event.target.tagName == 'BUTTON') {
+        const postId = event.target.closest('li').id;
+        sendHttpRequest('DELETE', `https://jsonplaceholder.typicode.com/posts/${postId}`);
+    }
+})
 
 
 
