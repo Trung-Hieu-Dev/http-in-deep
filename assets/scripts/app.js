@@ -8,10 +8,11 @@ function sendHttpRequest (method, url, data) {
         //using fetch API
     return fetch(url, {
         method: method,
-        body: JSON.stringify(data),
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        body: data
+        // body: JSON.stringify(data),
+        // headers: {
+        //     'Content-Type': 'application/json'
+        // }
     }).then(response => {
         if(response.status >= 200 && response.status < 300) {
             return response.json();
@@ -22,13 +23,13 @@ function sendHttpRequest (method, url, data) {
         }
     }).catch(error => {
         console.log(error);
-        throw new Error('Somthing went wrong !');
+        throw new Error('Something went wrong !');
     });
 }
 
 async function fetchPosts() {
     try {
-        const responseData = await sendHttpRequest('GET', 'https://jsonplaceholder.typicode.com/pos');
+        const responseData = await sendHttpRequest('GET', 'https://jsonplaceholder.typicode.com/posts');
     
         const listOfPosts = responseData;
 
@@ -48,12 +49,18 @@ async function fetchPosts() {
 
 async function createPost(title, content) {
     const userId = Math.random();
-    const post = {
-        title: title,
-        body: content,
-        userId: userId
-    }
-    sendHttpRequest('POST', 'https://jsonplaceholder.typicode.com/posts', post);
+    // const post = {
+    //     title: title,
+    //     body: content,
+    //     userId: userId
+    // }
+
+    const formData = new FormData(form);
+    // formData.append('title', title);
+    // formData.append('body', content);
+    formData.append('userId', userId);
+
+    sendHttpRequest('POST', 'https://jsonplaceholder.typicode.com/posts', formData);
 }
 
 fetchButton.addEventListener('click', fetchPosts);
